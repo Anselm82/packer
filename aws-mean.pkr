@@ -1,0 +1,10 @@
+{
+  "builders": [{
+    "ami_name": "devops-tools-ami",
+    "source_ami": "ami-04dd4500af104442f",
+    "type": "amazon-ebs",
+    "profile": "default",
+    "instance_type" : "t2.micro",
+    "ssh_username": "ec2-user"
+  }]
+}
