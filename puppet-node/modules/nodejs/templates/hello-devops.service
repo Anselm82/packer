@@ -1,0 +1,15 @@
+[Unit]
+Description=Hello world DevOps
+
+[Service]
+ExecStart=/var/www/nodejs/hello-devops.js
+Restart=always
+User=vagrant
+# Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
+Group=vagrant
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/var/www/nodejs
+
+[Install]
+WantedBy=multi-user.target
