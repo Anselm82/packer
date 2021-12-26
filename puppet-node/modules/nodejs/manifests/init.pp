@@ -12,10 +12,10 @@ class nodejs {
     notify => Service['nginx'],
   }
 
-  file { "${::npm_document_root}/nodejs":
+  file { "${::document_root}/nodejs":
     ensure => 'directory',
-    owner  => 'vagrant',
-    group  => 'vagrant'
+    owner  => 'www-data',
+    group  => 'www-data'
   }
 
   file { '/etc/systemd/system/hello-devops.service':
@@ -25,18 +25,18 @@ class nodejs {
     group   => 'root'
   }
 
-  file { "${::npm_document_root}/nodejs/hello-devops.js":
+  file { "${::document_root}/nodejs/hello-devops.js":
     content => template('nodejs/hello-devops.js'),
     mode    => '0755',
-    owner   => 'vagrant',
-    group   => 'vagrant',
+    owner   => 'www-data',
+    group   => 'www-data',
     require => File['/etc/nginx/sites-enabled/proxy.conf'],
   }
 
   exec { 'init app':
     path    => $::command_path,
     command => 'systemctl start hello-devops',
-    cwd     => "${::npm_document_root}/nodejs/",
+    cwd     => "${::document_root}/nodejs/",
     notify  => Service['nginx']
   }
 }

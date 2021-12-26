@@ -1,10 +1,33 @@
 {
   "builders": [{
-    "ami_name": "devops-tools-ami",
-    "source_ami": "ami-04dd4500af104442f",
-    "type": "amazon-ebs",
-    "profile": "default",
-    "instance_type" : "t2.micro",
-    "ssh_username": "ec2-user"
-  }]
+      "ami_name": "devops-tools-ami",
+      "source_ami": "ami-07d8796a2b0f8d29c",
+      "type": "amazon-ebs",
+      "profile": "default",
+      "instance_type" : "t2.micro",
+      "ssh_username": "ubuntu",
+      "ssh_interface": "public_ip"
+    }, {
+      "communicator": "ssh",
+      "source_path": "ubuntu/bionic64",
+      "provider": "virtualbox",
+      "add_force": true,
+      "type": "vagrant"
+    }
+  ],
+  "provisioners": [{
+      "type": "shell",
+      "inline": [
+        "sudo wget https://apt.puppetlabs.com/puppet6-release-bionic.deb",
+		    "sudo dpkg -i puppet6-release-bionic.deb",
+		    "sudo apt-get update",
+		    "sudo apt-get install -y puppet-agent"
+      ]
+    },{
+      "type": "puppet-masterless",
+      "manifest_file": "./puppet-node/manifests/default.pp",
+      "module_paths": ["./puppet-node/modules"],
+      "puppet_bin_dir": "/opt/puppetlabs/bin"
+    }
+  ]
 }
