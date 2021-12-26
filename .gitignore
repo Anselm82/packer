@@ -1,2 +1,4 @@
 .vagrant
 .DS_Store
+output-vagrant
+ubuntu-bionic-*
