@@ -1,4 +1,4 @@
 .vagrant
 .DS_Store
 output-vagrant
-ubuntu-bionic-*
+ubuntu-bionic-18.04-cloudimg-console.log

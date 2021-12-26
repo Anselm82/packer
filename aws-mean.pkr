@@ -9,9 +9,7 @@
       "ssh_interface": "public_ip"
     }, {
       "communicator": "ssh",
-      "source_path": "ubuntu/bionic64",
-      "provider": "virtualbox",
-      "add_force": true,
+      "vagrantfile_template": "./puppet-node/Vagrantfile",
       "type": "vagrant"
     }
   ],
