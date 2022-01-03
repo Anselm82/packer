@@ -1,0 +1,14 @@
+[Unit]
+Description=hellodevops.js
+Documentation=https://example.com
+After=network.target
+
+[Service]
+Environment=NODE_PORT=3000
+Type=simple
+User=ubuntu
+ExecStart=/usr/bin/node /var/www/nodejs/hellodevops.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

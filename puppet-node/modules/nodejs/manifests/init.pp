@@ -18,25 +18,31 @@ class nodejs {
     group  => 'www-data'
   }
 
-  file { '/etc/systemd/system/hello-devops.service':
-    content => template('nodejs/hello-devops.service'),
+  file { '/etc/systemd/system/hellodevops.service':
+    content => template('nodejs/hellodevops.service'),
     mode    => '0755',
     owner   => 'root',
     group   => 'root'
   }
 
-  file { "${::document_root}/nodejs/hello-devops.js":
-    content => template('nodejs/hello-devops.js'),
+  file { "${::document_root}/nodejs/hellodevops.js":
+    content => template('nodejs/hellodevops.js'),
     mode    => '0755',
     owner   => 'www-data',
     group   => 'www-data',
     require => File['/etc/nginx/sites-enabled/proxy.conf'],
   }
 
-  exec { 'init app':
+  exec { 'reload daemons':
     path    => $::command_path,
-    command => 'systemctl start hello-devops',
-    cwd     => "${::document_root}/nodejs/",
-    notify  => Service['nginx']
+    command => 'sudo systemctl daemon-reload'
+  }
+
+  service { 'hellodevops':
+    ensure    => running,
+    enable    => true,
+    hasstatus => true,
+    path      => $::command_path,
+    restart   => 'sudo systemctl start hellodevops',
   }
 }

@@ -7,13 +7,19 @@
       "instance_type" : "t2.micro",
       "ssh_username": "ubuntu",
       "ssh_interface": "public_ip"
-    }, {
+    },{
       "communicator": "ssh",
       "vagrantfile_template": "./puppet-node/Vagrantfile",
-      "type": "vagrant"
+      "type": "vagrant",
+      "source_path": "ubuntu/bionic64"
     }
   ],
   "provisioners": [{
+      "type": "shell",
+      "inline": [
+        "sudo apt-get install -y nginx"
+      ]
+    },{
       "type": "shell",
       "inline": [
         "sudo wget https://apt.puppetlabs.com/puppet6-release-bionic.deb",
