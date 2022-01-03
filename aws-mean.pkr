@@ -1,15 +1,27 @@
 {
+  "variables": {
+    "image_name" : "devops-tools-ami",
+    "deploy_environments": "vagrant",
+    "aws_profile": "default",
+    "aws_image_tag_filter" : "Name=tag:{{user `image_name`}},Values={{user `image_name`}}",
+    "aws_security_group_id" : "sg-06eb7592adc485c48"
+  },
   "builders": [{
-      "ami_name": "devops-tools-ami",
+      "ami_name": "{{user `image_name`}}",
       "source_ami": "ami-07d8796a2b0f8d29c",
       "type": "amazon-ebs",
-      "profile": "default",
+      "profile": "{{user `aws_profile`}}",
       "instance_type" : "t2.micro",
       "ssh_username": "ubuntu",
-      "ssh_interface": "public_ip"
+      "ssh_interface": "public_ip",
+      "tags": {
+        "Name" : "{{user `image_name`}}",
+        "{{user `image_name`}}": "{{user `image_name`}}"
+      }
     },{
+      "vagrantfile_template" : "./puppet-node/Vagrantfile",
+      "box_name" : "{{user `image_name`}}",
       "communicator": "ssh",
-      "vagrantfile_template": "./puppet-node/Vagrantfile",
       "type": "vagrant",
       "source_path": "ubuntu/bionic64"
     }
@@ -32,6 +44,13 @@
       "manifest_file": "./puppet-node/manifests/default.pp",
       "module_paths": ["./puppet-node/modules"],
       "puppet_bin_dir": "/opt/puppetlabs/bin"
+    }
+  ],
+  "post-processors": [
+    {
+      "only": ["amazon-ebs"],
+      "type": "shell-local",
+      "inline": ["./aws-start-instance.sh -f {{user `aws_image_tag_filter`}} -s {{user `aws_security_group_id`}} {{user `deploy_environments`}}"]
     }
   ]
 }
