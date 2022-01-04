@@ -1,0 +1,45 @@
+{
+  "variables": {
+    "image_name" : "mongo-devops-tools-ami",
+    "deploy_environments": "aws",
+    "aws_profile": "default",
+    "aws_image_tag_filter" : "Name=tag:{{user `image_name`}},Values={{user `image_name`}}",
+    "aws_security_group_id" : "sg-06eb7592adc485c48"
+  },
+  "builders": [{
+      "ami_name": "{{user `image_name`}}",
+      "source_ami": "ami-07d8796a2b0f8d29c",
+      "type": "amazon-ebs",
+      "profile": "{{user `aws_profile`}}",
+      "instance_type" : "t2.micro",
+      "ssh_username": "ubuntu",
+      "ssh_interface": "public_ip",
+      "tags": {
+        "Name" : "{{user `image_name`}}",
+        "{{user `image_name`}}": "{{user `image_name`}}"
+      }
+    }
+  ],
+  "provisioners": [{
+      "type": "shell",
+      "inline": [
+        "sudo wget https://apt.puppetlabs.com/puppet6-release-bionic.deb",
+		    "sudo dpkg -i puppet6-release-bionic.deb",
+		    "sudo apt-get update",
+		    "sudo apt-get install -y puppet-agent"
+      ]
+    },{
+      "type": "puppet-masterless",
+      "manifest_file": "./puppet-mongo/manifests/default.pp",
+      "module_paths": ["./puppet-mongo/modules"],
+      "puppet_bin_dir": "/opt/puppetlabs/bin"
+    }
+  ],
+  "post-processors": [
+    {
+      "only": ["amazon-ebs"],
+      "type": "shell-local",
+      "inline": ["./aws-start-instance.sh -f {{user `aws_image_tag_filter`}} -s {{user `aws_security_group_id`}} {{user `deploy_environments`}}"]
+    }
+  ]
+}
