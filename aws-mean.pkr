@@ -1,7 +1,7 @@
 {
   "variables": {
     "image_name" : "devops-tools-ami",
-    "deploy_environments": "vagrant",
+    "deploy_environments": "aws vagrant",
     "aws_profile": "default",
     "aws_image_tag_filter" : "Name=tag:{{user `image_name`}},Values={{user `image_name`}}",
     "aws_security_group_id" : "sg-06eb7592adc485c48"

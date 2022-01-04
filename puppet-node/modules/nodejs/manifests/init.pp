@@ -18,6 +18,12 @@ class nodejs {
     group  => 'www-data'
   }
 
+  exec { 'install express':
+    path    => $::command_path,
+    command => 'npm install express --save',
+    cwd     => "${::document_root}/nodejs"
+  }
+
   file { '/etc/systemd/system/hellodevops.service':
     content => template('nodejs/hellodevops.service'),
     mode    => '0755',

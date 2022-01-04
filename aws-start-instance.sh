@@ -43,17 +43,18 @@ do
         if [ ! -z "$ami_id" ];
         then
             deployment=$(aws ec2 run-instances --count 1 --image-id $ami_id --instance-type t2.micro --key-name devops-ami --security-group-ids $SECURITY_GROUP)
-            echo $deployment > deployment-aws-$date.txt
+            echo $deployment
         fi
     elif [ "$param" == "vagrant" ];
     then
         mkdir vagrant-$date
         cp ./output-vagrant/package.box vagrant-$date
         cd vagrant-$date
-        vagrant box add new-box package.box
+        vagrant box add new-box --force package.box
         vagrant init new-box
+        cp -f ../puppet-node/Vagrantfile  .
         deployment=$(vagrant up)
-        echo $deployment > deployment-vagrant-$date.txt
+        echo $deployment
     fi
 done
 exit 0
